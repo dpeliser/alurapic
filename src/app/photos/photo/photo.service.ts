@@ -1,9 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
 import { Photo } from './photo';
 import { PhotoComment } from './photo-comment';
+import { environment } from '../../../environments/environment';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = environment.ApiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class PhotoService {
@@ -27,12 +31,28 @@ export class PhotoService {
         return this.http.post(`${API_URL}/photos/upload`, formData);
     }
 
-    findById(id: number) {
-        return this.http.get<Photo>(`${API_URL}/photos/${id}`);
+    findById(photoId: number) {
+        return this.http.get<Photo>(`${API_URL}/photos/${photoId}`);
     }
 
-    getComments(id: number) {
-        return this.http.get<PhotoComment[]>(`${API_URL}/photos/${id}/comments`);
+    getComments(photoId: number) {
+        return this.http.get<PhotoComment[]>(`${API_URL}/photos/${photoId}/comments`);
+    }
+
+    addComment(photoId: number, commentText: string) {
+        return this.http.post(`${API_URL}/photos/${photoId}/comments`, {
+            commentText
+        });
+    }
+
+    removePhoto(photoId: number) {
+        return this.http.delete(`${API_URL}/photos/${photoId}`);
+    }
+
+    like(photoId: number) {
+        return this.http.post(`${API_URL}/photos/${photoId}/like`, {}, { observe: 'response' })
+            .pipe(map(res => true))
+            .pipe(catchError(err => err.status == '304' ? of(false) : throwError(err)));
     }
 
 }
