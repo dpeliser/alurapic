@@ -17,6 +17,7 @@ describe('PhotoFormComponent', () => {
     fixture = TestBed.createComponent(PhotoFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    console.log('test');
   });
 
   it('should create', () => {

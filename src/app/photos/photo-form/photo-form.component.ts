@@ -39,6 +39,7 @@ export class PhotoFormComponent implements OnInit {
   upload() {
     const description = this.photoForm.get('description').value;
     const allowComments = this.photoForm.get('allowComments').value;
+    console.log('test');
     this.photoService
       .upload(description, allowComments, this.file)
       .pipe(finalize(() => this.router.navigate(['/user', this.userService.getUserName()])))
